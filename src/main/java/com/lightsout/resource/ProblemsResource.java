@@ -18,7 +18,8 @@ public class ProblemsResource {
 
     @GET
     public List<Problem> getAllProblems() {
-        return Problem.listAll();
+        // Sort by size ascending
+        return Problem.list("ORDER BY size ASC");
     }
 
     @GET
@@ -44,8 +45,6 @@ public class ProblemsResource {
                     .entity(Map.of("error", "No solution found"))
                     .build();
         }
-
-        problem.persist();
 
         return Response.ok()
                 .entity(Map.of(

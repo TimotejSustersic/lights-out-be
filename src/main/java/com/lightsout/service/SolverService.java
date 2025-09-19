@@ -21,7 +21,6 @@ public class SolverService {
 
         int moves = 0;
         boolean solutionFound = false;
-        var steps = new ArrayList<>();
 
         // alg var
         var visited = new HashSet<String>();
@@ -51,12 +50,20 @@ public class SolverService {
             }
         }
 
-        if (!solutionFound)
-            return new SolverResult(false, getTime(start), 0, null);
+        long timeSpent = getTime(start);
 
+        if (!solutionFound)
+            return new SolverResult(false, timeSpent, 0, null);
+
+        // save problem solution is found
+        problem.timestamp = start;
+        problem.difficulty = 0;
+        problem.persist();
         var solution = getSolution(problem, node);
 
-        return new SolverResult(solutionFound, getTime(start), moves, solution);
+        System.out.println("Problem solved: moves=" + moves + ", time=" + timeSpent + "ms");
+
+        return new SolverResult(solutionFound, timeSpent, moves, solution);
     }
 
 
@@ -134,7 +141,8 @@ public class SolverService {
         solution.problem = problem;
         solution.persist();
 
-        storeSolutionSteps(solution, node, 0);
+        int order = storeSolutionSteps(solution, node, 0);
+        problem.difficulty = (double) (order - 1) / problem.size;
 
         return solution;
     }
