@@ -14,15 +14,10 @@ public class SolutionStep extends PanacheEntity {
     public int x;
     public int y;
 
-    @Column(name = "step_order")
-    public int stepOrder; // use snake_case in DB
+    // this was before I realized order is unimportant
+    // @Column(name = "step_order")
+    // public int stepOrder; // use snake_case in DB
 
-    public SolutionStep() {}
-
-    public SolutionStep(Solution solution, int x, int y, int stepOrder) {
-        this.solution = solution;
-        this.x = x;
-        this.y = y;
-        this.stepOrder = stepOrder;
+    public SolutionStep() {
     }
 }

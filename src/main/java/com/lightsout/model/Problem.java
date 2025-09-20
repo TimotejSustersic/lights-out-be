@@ -11,13 +11,13 @@ public class Problem extends PanacheEntity {
 
     @Convert(converter = GridConverter.class)
     @Column(columnDefinition = "CLOB")
-    public int[][] grid;
+    public int[] grid;
 
     public int size;
+    public int moves;
     public Instant timestamp;
-
-    // difficulty (you can store as double or int)
     public double difficulty;
 
-    public Problem() {}
+    public Problem() {
+    }
 }

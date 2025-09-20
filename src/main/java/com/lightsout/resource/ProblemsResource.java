@@ -1,6 +1,6 @@
 package com.lightsout.resource;
 
-import com.lightsout.service.SolverService;
+import com.lightsout.service.LinearAlgebraSolver;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -31,7 +31,7 @@ public class ProblemsResource {
     }
 
     @Inject
-    SolverService solverService;
+    LinearAlgebraSolver solverService;
 
     @POST
     @Transactional
@@ -40,17 +40,11 @@ public class ProblemsResource {
 
         var result = solverService.solve(problem);
 
-        if (!result.success) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(Map.of("error", "No solution found"))
-                    .build();
-        }
-
         return Response.ok()
                 .entity(Map.of(
+                        "success", result.success,
                         "timeMs", result.timeMs,
-                        "moves", result.moves,
-                        "solutionId", result.solution.id
+                        "moves", result.moves
                 ))
                 .build();
     }

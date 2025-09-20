@@ -9,8 +9,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
+// no longer works because of change in database
 @ApplicationScoped
-public class SolverService {
+public class BFSSolver {
 
     private long getTime(Instant start) {
         return Duration.between(start, Instant.now()).toMillis();
@@ -26,8 +27,10 @@ public class SolverService {
         var visited = new HashSet<String>();
         var queue = new LinkedList<Node>();
 
+        // here we used to store 2D tables to DB but then switched to 1D. Since we don't use this algorithm this is to avoid error
+        var fakeGrid = new int[][]{};
         // add initial node
-        Node node = new Node(problem.grid, null, -1, -1);
+        Node node = new Node(fakeGrid, null, -1, -1); // problem.grid (use this instead of fakegrid)
         queue.add(node);
         visited.add(node.hash());
 
@@ -147,6 +150,7 @@ public class SolverService {
         return solution;
     }
 
+    // this was before I realized order is unimportant
     protected int storeSolutionSteps(Solution solution, Node node, int parentOrder) {
 
         if (node == null)
@@ -158,7 +162,7 @@ public class SolverService {
         step.solution = solution;
         step.x = node.x;
         step.y = node.y;
-        step.stepOrder = order;
+        // step.stepOrder = order;
         step.persist();
 
         return order + 1;

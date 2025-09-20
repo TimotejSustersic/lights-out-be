@@ -1,7 +1,6 @@
 package com.lightsout.resource;
 
 import com.lightsout.model.Solution;
-import com.lightsout.model.SolutionStep;
 import com.lightsout.resource.dto.SolutionDTO;
 import com.lightsout.resource.dto.SolutionStepDTO;
 import jakarta.ws.rs.*;
@@ -9,15 +8,21 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Path("/solutions")
 @Produces(MediaType.APPLICATION_JSON)
 public class SolutionsResource {
 
     @GET
-    public List<Solution> getAllSolutions() {
-        return Solution.listAll();
+    public Response getAllSolutions() {
+        List<SolutionDTO> solutions = Solution.<Solution>listAll().stream()
+                .map(s -> new SolutionDTO(
+                        s.id,
+                        s.problem.id,
+                        s.steps.stream().map(step -> new SolutionStepDTO(step.x, step.y)).toList()
+                ))
+                .toList();
+        return Response.ok(solutions).build();
     }
 
 
@@ -31,8 +36,8 @@ public class SolutionsResource {
         }
 
         List<SolutionStepDTO> steps = solution.steps.stream()
-                .map(s -> new SolutionStepDTO(s.x, s.y, s.stepOrder))
-                .collect(Collectors.toList());
+                .map(s -> new SolutionStepDTO(s.x, s.y))
+                .toList();
 
         return new SolutionDTO(solution.id, solution.problem.id, steps);
     }
