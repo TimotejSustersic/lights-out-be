@@ -1,68 +1,96 @@
-# lights-out-be
+# Lights Out Game (Backend)
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+## Project Description
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+Quarkus backend service for the **Lights Out** puzzle game.
+It provides REST APIs for creating, storing, and solving Lights Out problems. The backend handles problem validation and solution computation.
 
-## Running the application in dev mode
+---
 
-You can run your application in dev mode that enables live coding using:
+## 🔧 Tech Stack
 
-```shell script
-./mvnw quarkus:dev
+| Layer      | Tech                              |
+| ---------- | --------------------------------- |
+| Framework  | [Quarkus](https://quarkus.io/)    |
+| Database   | H2 (in-memory)     |
+| Build Tool | [Maven](https://maven.apache.org/) |
+
+---
+
+## ⚙️ Setup & Installation
+
+1. **Clone the repo**
+
+   ```bash
+   git clone https://github.com/TimotejSustersic/lights-out-be.git
+   ```
+
+2. **Run in dev mode / Run project in IntelliJ**
+
+   ```bash
+   ./mvnw compile quarkus:dev
+   ```
+
+   The backend will be available at: [http://localhost:8080](http://localhost:8080)
+
+---
+
+## 📂 Project Structure
+
+```
+src/
+ ├── main/java/com/lightsout/
+ │   ├── model/                # Entities (Problem, Solution, SolutionStep)
+ │   ├── resource/             # REST endpoints
+ │   └── service/              # Solvers (BFS, Linear Algebra)
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+---
 
-## Packaging and running the application
+## 🚀 Features & Functionality
 
-The application can be packaged using:
+* **BFSSolver:**
+  A simple breadth-first search algorithm with state caching.
+  Intended for testing while the frontend was under development.
+  Works well for small grids (e.g., 3x3), struggles on larger boards.
 
-```shell script
-./mvnw package
-```
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+* **LinearAlgebraSolver:**
+  The main production solver.
+  Uses Gaussian elimination over GF(2) to compute solutions in milliseconds, regardless of grid size.
+  The solver generates all possible grid moves, constructs a matrix representation, and reduces it to solve the system.
+  The approach was inspired by [this video](https://www.youtube.com/watch?v=1izbpSk3ays).
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
 
-If you want to build an _über-jar_, execute the following command:
+* **API Endpoints**
 
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
+  | Endpoint                 | Method | Description                               |
+    | ------------------------ | ------ |-------------------------------------------|
+  | `/problems`              | GET    | List all stored problems.                 |
+  | `/problems/{id}`         | GET    | Fetch a specific problem by ID.           |
+  | `/problems`              | POST   | Create a new problem & check solvability. |
+  | `/solutions`             | GET    | List all stored solutions.                |
+  | `/solutions/{problemId}` | GET    | Fetch solution for a given problem.       |
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
 
-## Creating a native executable
+* **Swagger Docs** available at: [http://localhost:8080/q/swagger-ui/](http://localhost:8080/q/swagger-ui/)
 
-You can create a native executable using:
+---
 
-```shell script
-./mvnw package -Dnative
-```
+## 📚 References
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
+* [Gaussian Elimination for Lights Out](https://www.youtube.com/watch?v=1izbpSk3ays)
 
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
+---
 
-You can then execute your native executable with: `./target/lights-out-be-1.0-SNAPSHOT-runner`
+## 👨‍💻 Author
 
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
+**Timotej Šušteršič**
 
-## Related Guides
+* [GitHub](https://github.com/TimotejSustersic/)
 
-- REST JSON-B ([guide](https://quarkus.io/guides/rest#json-serialisation)): JSON-B serialization support for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
-- REST Jackson ([guide](https://quarkus.io/guides/rest#json-serialisation)): Jackson serialization support for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it
-- REST JAXB ([guide](https://quarkus.io/guides/resteasy-reactive#xml-serialisation)): JAXB serialization support for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
+---
 
-## Provided Code
+## 📄 License
 
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+This project is licensed under the MIT License. See the `LICENSE` file for details.
